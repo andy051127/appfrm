@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Thymeleaf Examples</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <div th:insert="~{example/example_fragment :: head}"></div> <!--insert: 삽입-->
+    <ul>
+        <li th:if="${isLogin}" th:text="${userName} + '님 반갑습니다.'"></li> <!--${isLogin}이 True일 시 반환-->
+        <li th:unless="${isLogin}" th:text="로그인해주세요."></li> <!--${isLogin}이 False일 시 반환-->
+    </ul>
+
+    <table>
+        <tr>
+            <th>NAME</th>
+            <th>PRICE</th>
+            <th>IN STOCK</th>
+        </tr>
+        <tr th:each="prod : ${prods}">
+            <td th:text="${prod.name}">Onions</td> <!--태그 안의 문자들은 Thymeleaf에 의해 ${}안의 불러온 값으로 대체됨-->
+            <td th:text="${prod.price}">2.41</td>
+            <td th:text="${prod.inStock}">yes</td>
+        </tr>
+    </table>
+    <div th:replace="~{example/example_fragment :: footer}"> <!--replace: 대체, 아래 요소들이 다 대체됨-->
+        <p>test</p>
+        <ul>
+            <li>hello</li>
+            <li>world!</li>
+        </ul>
+    </div>
+</body>
+
+</html>
