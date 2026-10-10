@@ -3,11 +3,43 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Hello</title>
+    <title>Open Chatting</title>
+    <script th:inline="javascript">
+        function addMessage(msg) {
+            var textarea = document.getElementById("console");
+            textarea.value = textarea.value + "\n" + msg;
+            textarea.scrollTop = textarea.scrollHeight; // scroll down
+        }
+        var socket;
+        function doOnload() {
+            socket = new WebSocket("ws://localhost:8888/chat/ws");
+            socket.onopen = function (evt) {
+                socket.send(JSON.stringify({ "cmd": "poll", "nickname": [[${ nickname }]] }));
+            }
+            socket.onmessage = function (evt) {
+                var chatmsg = JSON.parse(evt.data);
+                var cmd = chatmsg["cmd"];
+                var nickname = chatmsg["nickname"];
+                var msg = chatmsg["msg"];
+                addMessage("[" + nickname + "] " + msg);
+            }
+        }
+        function sendMessage() {
+            var msg = document.getElementById("msg").value;
+            socket.send(JSON.stringify({ "cmd": "push", "nickname": [[${ nickname }]], "msg": msg }));
+        }
+    </script>
 </head>
 
-<body>
+<body onload="doOnload();">
     <h1 th:text="'Hello ' + ${nickname} + '!'"></h1>
+    <table>
+        <tr>
+            <td><textarea id="console" rows="20"></textarea></td>
+        </tr>
+    </table>
+    <input type="text" name="msg" id="msg" value="">
+    <input type="button" value="Send" onclick="sendMessage();">
 </body>
 
 </html>
