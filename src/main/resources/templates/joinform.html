@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Join</title>
+</head>
+
+<body>
+    <h1>오픈대화방 회원가입</h1>
+    <form method="post" action="join">
+        <fieldset>
+            <legend>회원가입 폼</legend>
+            <div>
+                <label for="userId">사용자 ID</label>
+                <input type="text" name="userId" id="userId" value="" required><br />
+                <label for="userPwd">사용자 비밀번호</label>
+                <input type="password" name="userPwd" id="userPwd" value="" required><br />
+                <label for="nickname">별명</label>
+                <input type="text" name="nickname" id="nickname" value="" required><br />
+                <label for="userMail">이메일</label>
+                <input type="email" name="userMail" id="userMail" value="" required><br />
+                <input type="submit" value="Send">
+            </div>
+        </fieldset>
+    </form>
+</body>
+
+</html>
