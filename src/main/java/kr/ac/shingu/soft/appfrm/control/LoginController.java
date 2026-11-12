@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,7 +67,9 @@ public class LoginController {
     }
 
     // --> login.html
-    @PostMapping("login")
+    // @PostMapping("login")
+    // 폼 방식으로 했을때만 처리
+    @PostMapping(path="login", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public String login(@RequestParam("userId") String userId, @RequestParam("userPwd") String userPwd,
             HttpServletRequest request, Model model) {
         this.log.debug("userId: " + userId + ", pwd: " + userPwd);
@@ -86,6 +89,7 @@ public class LoginController {
         session.setAttribute("userId", userId);
         return "redirect:/";
     }
+
 
     // --> joinform.html
     @GetMapping("joinform")

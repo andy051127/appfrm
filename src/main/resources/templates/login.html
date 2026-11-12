@@ -4,23 +4,47 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <script th:inline="javascript">
+        function doLogin() {
+            var userId = document.getElementById("userId").value;
+            var userPwd = document.getElementById("userPwd").value;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                // readyState가 끝났고(4), 서버에서 정상응답(200) 을 보냈다면
+                if (this.readyState == 4 && this.status == 200) {
+                    var resData = JSON.parse(xhttp.responseText);
+                    if (resData.msg) {
+                        alert(resData.msg);
+                    }
+                    if (resData.success) {
+                        window.location = "/";
+                    }
+                }
+            }
+            xhttp.open("POST", "/login"); //비동기 (true 생략)
+            xhttp.setRequestHeader("content-type", "application/json");
+            const data = { userId: userId, userPwd: userPwd };
+            xhttp.send(JSON.stringify(data));
+        }
+    </script>
 </head>
 
 <body>
     <h1>Welcome</h1>
-    <form method="post" action="login">
-        <fieldset>
-            <legend>로그인 폼</legend>
-            <div>
-                <label for="userId">사용자 ID</label>
-                <input type="text" name="userId" id="userId" value="" required><br />
-                <label for="userPwd">사용자 비밀번호</label>
-                <input type="password" name="userPwd" id="userPwd" value="" required><br />
-                <input type="submit" value="Send">
-                <a href="/joinform" target="_self">회원가입</a>
-            </div>
-        </fieldset>
-    </form>
+    <!-- <form method="post" action="login"> -->
+    <fieldset>
+        <legend>로그인 폼</legend>
+        <div>
+            <label for="userId">사용자 ID</label>
+            <input type="text" name="userId" id="userId" value="" required><br />
+            <label for="userPwd">사용자 비밀번호</label>
+            <input type="password" name="userPwd" id="userPwd" value="" required><br />
+            <input type="button" value="Login" onclick="doLogin();">
+            <!-- 버튼을 클릭시 doLogin() 함수 실행, data 서버로 전송 -->
+            <a href="/joinform" target="_self">회원가입</a>
+        </div>
+    </fieldset>
+    <!-- </form> -->
 </body>
 
-</html
+</html>
