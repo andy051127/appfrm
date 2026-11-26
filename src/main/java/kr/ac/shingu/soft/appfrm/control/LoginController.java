@@ -1,5 +1,6 @@
 package kr.ac.shingu.soft.appfrm.control;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -8,21 +9,21 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import kr.ac.shingu.soft.appfrm.repository.ChatUser;
 import kr.ac.shingu.soft.appfrm.repository.ChatUserRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import kr.ac.shingu.soft.appfrm.service.ChatService;
 
 @Controller
 @RequestMapping("/")
 public class LoginController {
     private final Logger log = LoggerFactory.getLogger(LoginController.class);
-
     // public LoginController() {
     // }
 
@@ -41,9 +42,11 @@ public class LoginController {
 
     // @Autowired : 생성자 주입(Constructor Injection)이 권장되는 방식으로 자리 잡음.
     private final ChatUserRepository chatUserRepository;
+    private final ChatService chatService;
 
-    public LoginController(ChatUserRepository chatUserRepository) {
+    public LoginController(ChatUserRepository chatUserRepository, ChatService chatService) {
         this.chatUserRepository = chatUserRepository;
+        this.chatService = chatService;
     }
 
     @GetMapping("")
@@ -60,8 +63,12 @@ public class LoginController {
 
         ChatUser chatUser = chatUserOpt.get();
         String nickname = chatUser.getNickname();
-
         model.addAttribute("nickname", nickname);
+
+        // 채팅 메시지
+        String prevMsg = this.chatService.loadAllChatMsg();
+        this.log.debug("prevMsg: " + prevMsg);
+        model.addAttribute("prevMsg", prevMsg);
 
         return "main";
     }
@@ -69,7 +76,7 @@ public class LoginController {
     // --> login.html
     // @PostMapping("login")
     // 폼 방식으로 했을때만 처리
-    @PostMapping(path="login", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @PostMapping(path = "login", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
     public String login(@RequestParam("userId") String userId, @RequestParam("userPwd") String userPwd,
             HttpServletRequest request, Model model) {
         this.log.debug("userId: " + userId + ", pwd: " + userPwd);
@@ -90,7 +97,6 @@ public class LoginController {
         return "redirect:/";
     }
 
-
     // --> joinform.html
     @GetMapping("joinform")
     public String joinform() {
@@ -105,4 +111,10 @@ public class LoginController {
         return "redirect:/";
     }
 
+    @GetMapping("/all-user")
+    @ResponseBody
+    public List<ChatUser> getAllUser() {
+        List<ChatUser> chatUserList = this.chatUserRepository.findAllChatUser();
+        return chatUserList;
+    }
 }

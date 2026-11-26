@@ -23,6 +23,9 @@
                 var msg = chatmsg["msg"];
                 addMessage("[" + nickname + "] " + msg);
             }
+
+            var textarea = document.getElementById("console");
+            textarea.scrollTop = textarea.scrollHeight;
         }
         function sendMessage() {
             var msg = document.getElementById("msg").value;
@@ -35,7 +38,7 @@
     <h1 th:text="'Hello ' + ${nickname} + '!'"></h1>
     <table>
         <tr>
-            <td><textarea id="console" rows="20"></textarea></td>
+            <td><textarea id="console" rows="20" th:text="${prevMsg}"></textarea></td>
         </tr>
     </table>
     <input type="text" name="msg" id="msg" value="">
